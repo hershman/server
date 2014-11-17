@@ -83,7 +83,7 @@ you are in the project root directory)::
 We can now run the server, telling it to serve variants from the sets in
 the downloaded datafile::
 
-    $ ga4gh_server wormtable ga4gh-example-data
+    $ server_dev.py wormtable ga4gh-example-data
 
 To run queries against this server, we can use the ``ga4gh_client`` program;
 for example, here we run the ``variants/search`` method over the
@@ -95,7 +95,7 @@ is 60000 and we only want calls returned for call set ID HG03279::
 We can also query against the *variant name*; here we return the variant that
 has variant name ``rs75454623``::
 
-    $ ga4gh_client variants-search http://localhost:8000 1000g_2013 -r1 -e 60000 -n rs75454623  | less -S
+    $ client_dev.py variants-search http://localhost:8000 1000g_2013 -r1 -e 60000 -n rs75454623  | less -S
 
 +++++++++++++++++++++
 Converting 1000G data
@@ -137,7 +137,7 @@ VCF file must first be indexed with `tabix
 with tabix indicies already precomputed.  This backend can serve such datasets
 without any preprocessing via the command::
 
-    $ ga4gh_server tabix DATADIR
+    $ server_dev.py tabix DATADIR
 
 where DATADIR is a directory that contains subdirectories of tabix-indexed VCF
 file(s).  There cannot be more than one VCF file in any subdirectory that has

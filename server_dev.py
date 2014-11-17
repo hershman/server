@@ -1,5 +1,5 @@
 """
-Simple shim for running the client program during development.
+Simple shim for running the server program during development.
 """
 import ga4gh.cli
 
