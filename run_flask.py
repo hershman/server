@@ -28,6 +28,7 @@ VariantBackend = None
 
 # App
 app = Flask(__name__)
+app.config.from_object('config')
 
 @app.route('/')
 def index():
@@ -84,9 +85,6 @@ if __name__ == '__main__':
     parser.add_argument(
         "--port", "-P", default=8000, type=int,
         help="The port to listen on")
-    parser.add_argument('--debug', '-d',
-                        action='store_true', default=False,
-                        help="Turn on the Flask debugger. Not for production.")
 
     subparsers = parser.add_subparsers(title='subcommands',)
 
@@ -119,4 +117,4 @@ if __name__ == '__main__':
         parser.print_help()
     else:
         VariantBackend = args.backend(args.dataDir)
-        app.run(host='0.0.0.0', port=args.port, debug=args.debug)
+        app.run(host='0.0.0.0', port=args.port)
