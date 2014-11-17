@@ -7,19 +7,9 @@ import ga4gh.protocol as protocol
 
 from ga4gh.server import WormtableBackend, TabixBackend
 
-# Globals
-variant_sets = []
-backend = None
-
-# App
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return "Hello world"
-
+# Helper function
 def handleHTTPPost(request, endpoint, protocolClass):
-    data = request.get_data() #request.get_json()
+    data = request.get_data()
     try:
         protocolRequest = protocolClass.fromJSON(data)
     except ValueError:
@@ -31,26 +21,61 @@ def handleHTTPPost(request, endpoint, protocolClass):
                     mimetype="application/json")
     return resp
 
-# TODO: OPTIONS support
-@app.route('/variants/search', methods=['POST', 'OPTIONS'])
-def searchVariants():
-    if request.method == 'POST':
-        return handleHTTPPost(request,
-                              backend.searchVariants,
-                              protocol.GASearchVariantsRequest)
-    elif request.method == "OPTIONS":
-        return "To implement"
-    return "Something went wrong"
 
-@app.route('/variantsets/search', methods=['POST', 'OPTIONS'])
+# Globals
+VariantBackend = None
+
+
+# App
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Hello world"
+
+@app.route('/references/<id>', methods=['GET'])
+def getReference(id):
+    return "TODO"
+
+@app.route('/references/<id>/bases', methods=['GET'])
+def getReferenceBases(id):
+    return "TODO"
+
+@app.route('/referencesets/<id>', methods=['GET'])
+def getReferenceSet(id):
+    return "TODO"
+
+@app.route('/callsets/search', methods=['POST'])
+def searchCallSets():
+    return "TODO"
+
+@app.route('/readgroupsets/search', methods=['POST'])
+def searchReadGroupSets():
+    return "TODO"
+
+@app.route('/reads/search', methods=['POST'])
+def searchReads():
+    return "TODO"
+
+@app.route('/referencesets/search', methods=['POST'])
+def searchReferenceSets():
+    return "TODO"
+
+@app.route('/references/search', methods=['POST'])
+def searchReferences():
+    return "TODO"
+
+@app.route('/variantsets/search', methods=['POST'])
 def searchVariantSets():
-    if request.method == 'POST':
-        return handleHTTPPost(request,
-                              backend.searchVariantSets,
-                              protocol.GASearchVariantSetsRequest)
-    elif request.method == "OPTIONS":
-        return "To implement"
-    return "Something went wrong"
+    return handleHTTPPost(request,
+                          VariantBackend.searchVariantSets,
+                          protocol.GASearchVariantSetsRequest)
+
+@app.route('/variants/search', methods=['POST'])
+def searchVariants():
+    return handleHTTPPost(request,
+                          VariantBackend.searchVariants,
+                          protocol.GASearchVariantsRequest)
 
 #### CLI
 if __name__ == '__main__':
@@ -93,5 +118,5 @@ if __name__ == '__main__':
     if "backend" not in args:
         parser.print_help()
     else:
-        backend = args.backend(args.dataDir)
+        VariantBackend = args.backend(args.dataDir)
         app.run(host='0.0.0.0', port=args.port, debug=args.debug)
