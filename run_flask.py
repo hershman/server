@@ -18,34 +18,39 @@ app = Flask(__name__)
 def index():
     return "Hello world"
 
-# TODO: Refactor; OPTIONS support
-@app.route('/variants/search', methods=['POST', 'OPTIONS'])
-def searchVariants():
+def handleHTTPPost(request, endpoint, protocolClass):
     data = request.get_data() #request.get_json()
     try:
-        protocolRequest = protocol.GASearchVariantsRequest.fromJSON(data)
+        protocolRequest = protocolClass.fromJSON(data)
     except ValueError:
         return "Bad Request", 404
-    protocolResponse = backend.searchVariants(protocolRequest)
+    protocolResponse = endpoint(protocolRequest)
     ret = protocolResponse.toJSON()
     resp = Response(response=ret,
                     status=200,
                     mimetype="application/json")
     return resp
 
+# TODO: OPTIONS support
+@app.route('/variants/search', methods=['POST', 'OPTIONS'])
+def searchVariants():
+    if request.method == 'POST':
+        return handleHTTPPost(request,
+                              backend.searchVariants,
+                              protocol.GASearchVariantsRequest)
+    elif request.method == "OPTIONS":
+        return "To implement"
+    return "Something went wrong"
+
 @app.route('/variantsets/search', methods=['POST', 'OPTIONS'])
 def searchVariantSets():
-    data = request.get_data() #request.get_json()
-    try:
-        protocolRequest = protocol.GASearchVariantSetsRequest.fromJSON(data)
-    except ValueError:
-        return "Bad Request", 404
-    protocolResponse = backend.searchVariantSets(protocolRequest)
-    ret = protocolResponse.toJSON()
-    resp = Response(response=ret,
-                    status=200,
-                    mimetype="application/json")
-    return resp
+    if request.method == 'POST':
+        return handleHTTPPost(request,
+                              backend.searchVariantSets,
+                              protocol.GASearchVariantSetsRequest)
+    elif request.method == "OPTIONS":
+        return "To implement"
+    return "Something went wrong"
 
 #### CLI
 if __name__ == '__main__':
