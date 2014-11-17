@@ -16,7 +16,9 @@ from .server import WormtableBackend, TabixBackend
 from . import app
 
 ##############################################################################
-# Client
+# Server
+##############################################################################
+
 def server_main():
     parser = argparse.ArgumentParser(description="GA4GH reference server")
     # Add global options
