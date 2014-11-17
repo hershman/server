@@ -468,6 +468,23 @@ class TabixDataset(object):
 
 class Backend(object):
     """
+    Superclass of GA4GH protocol VariantBackend, ReadBackend.
+    """
+
+    def __init__(self, dataDir):
+        self._dataDir = dataDir
+
+
+class ReadBackend(Backend):
+    """
+    GA4GH Read protocol backend with pysam
+    """
+
+    def __init__(self, dataDir):
+        self._dataDir = dataDir
+
+class VariantBackend(Backend):
+    """
     Superclass of GA4GH protocol backends.
     """
     def __init__(self, dataDir, Dataset):
@@ -513,15 +530,15 @@ class Backend(object):
         return response
 
 
-class TabixBackend(Backend):
+class TabixBackend(VariantBackend):
     """
     A class that serves variants indexed by tabix.
     """
     def __init__(self, dataDir):
-        Backend.__init__(self, dataDir, TabixDataset)
+        VariantBackend.__init__(self, dataDir, TabixDataset)
 
 
-class WormtableBackend(Backend):
+class WormtableBackend(VariantBackend):
     """
     A backend based on wormtable tables and indexes. This backend is provided
     with a directory within which it can find VCF variant sets converted into
@@ -530,4 +547,4 @@ class WormtableBackend(Backend):
     corresponding wormtable directory.
     """
     def __init__(self, dataDir):
-        Backend.__init__(self, dataDir, WormtableDataset)
+        VariantBackend.__init__(self, dataDir, WormtableDataset)
