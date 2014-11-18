@@ -12,8 +12,8 @@ import argparse
 
 import ga4gh
 import ga4gh.client
-from .server import WormtableBackend, TabixBackend
-from . import app
+from ga4gh.backends import WormtableBackend, TabixBackend
+from ga4gh.server import app
 
 ##############################################################################
 # Server
