@@ -1,10 +1,3 @@
-"""
-Reference implementation of the GA4GH APIs.
-"""
-
-__version__ = '0.5.0'  # Follows API version?
-
-
 from flask import Flask, request, Response
 import ga4gh.protocol as protocol
 from ga4gh.backends import WormtableBackend, TabixBackend
