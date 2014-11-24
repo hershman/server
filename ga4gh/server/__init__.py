@@ -1,6 +1,5 @@
 from flask import Flask
 
-
 # haml support
 from werkzeug import ImmutableDict
 class FlaskWithHamlish(Flask):
