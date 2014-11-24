@@ -359,6 +359,10 @@ class TabixDataset(VariantDataset):
 
         return response
 
+    def getMetadata(self):
+        # TODO: Implement this
+        ret = []
+        return ret
 
 class Backend(object):
     """
