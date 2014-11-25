@@ -14,9 +14,11 @@ import pysam
 
 import ga4gh.protocol as protocol
 
+
 class VariantDataset(object):
     def __init__(self):
         pass
+
 
 class WormtableDataset(VariantDataset):
     """
@@ -364,6 +366,7 @@ class TabixDataset(VariantDataset):
         ret = []
         return ret
 
+
 class Backend(object):
     """
     Superclass of GA4GH protocol VariantBackend, ReadBackend.
@@ -380,6 +383,7 @@ class ReadBackend(Backend):
 
     def __init__(self, dataDir):
         self._dataDir = dataDir
+
 
 class VariantBackend(Backend):
     """
