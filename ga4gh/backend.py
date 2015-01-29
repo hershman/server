@@ -90,6 +90,73 @@ class Backend(object):
             protocol.GASearchVariantsResponse, "variants",
             self.variantsGenerator)
 
+    def infoBeacon(self, request):
+        from frontend import app
+        response = protocol.BeaconResource()
+        response.id = app.config["BEACON_ID"]
+        response.name = app.config["BEACON_NAME"]
+        response.organization = app.config["BEACON_ORGANIZATION"]
+        response.description = app.config["BEACON_DESCRIPTION"]
+        response.api = "0.2"
+        import os
+        hostName = os.environ.get("HTTP_HOST", "localhost")
+        response.homepage = "http://%s/" % hostName
+        return response.toJSONString()
+
+    def searchBeacon(self, request):
+        """
+        Searches beacon but need to update to 0.2
+        """
+        from frontend import app
+        def samevars(result, allele):
+            if allele is None:
+                return "True"
+            for variant in result:
+                if allele == "D":
+                    if len(variant.referenceBases) > 1:
+                        return "True"
+                else:
+                    for alt in variant.alternateBases:
+                        if allele in alt:
+                            return "True"
+            return "False"
+
+        query = protocol.QueryResource()
+        query.chromosome = str(request.values['chromosome'])
+        query.position = int(request.values['position'])
+        if 'reference' in request.values:
+            query.reference = request.values['reference']
+        if 'allele' in request.values:
+            query.allele = request.values['allele']
+        if 'dataset' in request.values:
+            query.dataset = request.values["dataset"]
+
+        #Better but doesn't work
+        result = []
+        variantSetIds = request.values["population"]
+        print(variantSetIds)
+        startPosition = int(request.values['coord'])
+        variantSetId = request.values["population"]
+        if variantSetId in self._variantSetIdMap:
+            variantSet = self._variantSetIdMap[variantSetId]
+            for variant in variantSet.getVariants(
+                str(request.values["chr"]), startPosition, startPosition,
+                None, []):
+                result.append(variant)
+        else:
+            raise Exception, "%s missing" % variantSetId
+
+        exists = samevars(result, request.values['allele'])
+
+        request_response = protocol.ResponseResource()
+        request_response.exists = exists
+
+        response = protocol.BeaconResponseResource()
+        response.beacon = app.config["BEACON_ID"]
+        response.query = query
+        response.response = request_response
+        return response.toJSONString()
+
     def variantSetsGenerator(self, request):
         """
         Returns a generator over the (variantSet, nextPageToken) pairs defined

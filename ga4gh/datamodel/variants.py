@@ -300,7 +300,7 @@ class TabixVariantSet(VariantSet):
                 "Specifying call set ids is not supported")
         if referenceName in self._chromTabixFileMap:
             tabixFile = self._chromTabixFileMap[referenceName]
-            cursor = tabixFile.fetch(referenceName, startPosition, endPosition)
+            cursor = tabixFile.fetch(str(referenceName), startPosition, endPosition)
             for record in cursor:
                 yield self.convertVariant(record)
 

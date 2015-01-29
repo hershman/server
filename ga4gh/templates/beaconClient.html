@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <title>Beacon Client</title>
+        <link href="http://cdn.jsdelivr.net/bootstrap/2.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div style='width:900px;margin:auto;'>
+            <form action="query" method="GET">
+                <table border="1" style="width:300px">
+                  <tbody>
+                    <tr>
+                        <td>Population</td>
+                        <td>
+                            <select name="dataset">
+                              {% for variant_set in variant_sets %}
+                                <option value="{{ variant_set }}">{{ variant_set }}</option>
+                              {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Genome</td>
+                        <td>
+                            <select name="reference">
+                                <option value="GRCh37">GRCh37</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Chromosome</td>
+                        <td>
+                            <select name="chromosome">
+                              {% for chrom in range(1,22) %}
+                                <option value="{{ chrom }}">{{ chrom }}</option>
+                              {% endfor %}
+                              <option value="22" selected >22</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Coordinate</td>
+                        <td>
+                            <input type="text" name="position" size="10" value=16265064 /><br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Allele</td>
+                        <td>
+                            <input type="text" name="allele" size="30" value="G" />
+                        </td>
+                    </tr>
+                  </tbody>
+                </table><br/>
+                <input type="submit" value="Submit" />
+            </form>
+            <p><a href="info">Info</a></p>
+        </div>
+        <script src="http://code.jquery.com/jquery-latest.js" />
+        <link href="http://cdn.jsdelivr.net/bootstrap/2.1.1/js/bootstrap.min.js" rel="stylesheet"/>
+    </body>
+</html>

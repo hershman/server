@@ -14,3 +14,11 @@ class DefaultConfig(object):
     Simplest default server configuration.
     """
     MAX_CONTENT_LENGTH = 2 * 1024 * 1024  # 2MB
+
+    BEACON = True
+    BEACON_ID = "reference-beacon"
+    BEACON_NAME = "Beacon"
+    BEACON_ORGANIZATION = "You"
+    BEACON_DESCRIPTION = ""
+
+
