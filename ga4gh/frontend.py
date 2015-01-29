@@ -10,10 +10,9 @@ from __future__ import unicode_literals
 import os
 import flask
 import flask.ext.api as api
-from flask.ext.api.decorators import set_renderers
 import flask.ext.cors as cors
 
-app = flask.Flask(__name__) #api.FlaskAPI
+app = flask.Flask(__name__)
 app.config.from_object('ga4gh.server.config:DefaultConfig')
 if os.environ.get('GA4GH_CONFIGURATION') is not None:
     app.config.from_envvar('GA4GH_CONFIGURATION')
