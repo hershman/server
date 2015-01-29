@@ -12,10 +12,19 @@ import flask
 import flask.ext.api as api
 import flask.ext.cors as cors
 
+from flask.ext.api.decorators import set_renderers
+from flask.ext.api.renderers import HTMLRenderer
+
 app = api.FlaskAPI(__name__)
 app.config.from_object('ga4gh.server.config:DefaultConfig')
 if os.environ.get('GA4GH_CONFIGURATION') is not None:
     app.config.from_envvar('GA4GH_CONFIGURATION')
+
+app.config['DEFAULT_RENDERERS'] = [
+    'flask.ext.api.renderers.JSONRenderer',
+    'flask.ext.api.renderers.HTMLRenderer',
+    'flask.ext.api.renderers.BrowsableAPIRenderer',
+]
 
 cors.CORS(app, allow_headers='Content-Type')
 
@@ -49,11 +58,11 @@ def handleHTTPOptions():
     response.headers.add("Access-Control-Request-Methods", "GET,POST,OPTIONS")
     return response
 
-
 @app.route('/')
 def index():
     if app.config["BEACON"]:
-        return flask.render_template('beaconClient.html', variant_sets=["1kg_phase3"])
+        # TODO: Get list of variant_sets from backend
+        return flask.render_template('beaconClient.html', variant_sets=app.backend._variantSetIdMap)
     else:
         flask.abort(404)
 
