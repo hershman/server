@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import os
 
 import ga4gh.protocol as protocol
+from ga4gh.frontend import app
 
 
 class Backend(object):
@@ -91,14 +92,12 @@ class Backend(object):
             self.variantsGenerator)
 
     def infoBeacon(self, request):
-        from frontend import app
         response = protocol.BeaconResource()
         response.id = app.config["BEACON_ID"]
         response.name = app.config["BEACON_NAME"]
         response.organization = app.config["BEACON_ORGANIZATION"]
         response.description = app.config["BEACON_DESCRIPTION"]
         response.api = "0.2"
-        import os
         hostName = os.environ.get("HTTP_HOST", "localhost")
         response.homepage = "http://%s/" % hostName
         return response.toJSONString()
@@ -107,17 +106,18 @@ class Backend(object):
         """
         Searches beacon but need to update to 0.2
         """
-        from frontend import app
-        def samevars(result, allele):
+
+        def sameAllele(variants, allele):
+            """Checks if any variaints have the alternative allele specified"""
             if allele is None:
                 return "True"
-            for variant in result:
+            for variant in variants:
                 if allele == "D":
                     if len(variant.referenceBases) > 1:
                         return "True"
                 else:
-                    for alt in variant.alternateBases:
-                        if allele in alt:
+                    for alternativeBase in variant.alternateBases:
+                        if allele in alternativeBase:
                             return "True"
             return "False"
 
@@ -131,22 +131,19 @@ class Backend(object):
         if 'dataset' in request.values:
             query.dataset = request.values["dataset"]
 
-        #Better but doesn't work
         result = []
-        variantSetIds = request.values["population"]
-        print(variantSetIds)
-        startPosition = int(request.values['coord'])
-        variantSetId = request.values["population"]
+        startPosition = query.position
+        variantSetId = query.dataset
         if variantSetId in self._variantSetIdMap:
             variantSet = self._variantSetIdMap[variantSetId]
             for variant in variantSet.getVariants(
-                str(request.values["chr"]), startPosition, startPosition,
+                query.chromosome, startPosition, startPosition,
                 None, []):
                 result.append(variant)
         else:
-            raise Exception, "%s missing" % variantSetId
+            raise Exception, "%s is not a valid variantSetId for this server" % variantSetId
 
-        exists = samevars(result, request.values['allele'])
+        exists = sameAllele(result, query.allele)
 
         request_response = protocol.ResponseResource()
         request_response.exists = exists
