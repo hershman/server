@@ -202,15 +202,15 @@ Deployment with Docker
 
 It is also possible to deploy the server using Docker.
 
-- First build the Docker Image.  From the server/scripts folder run:
+- First build the Docker Image.  From the server/scripts folder run::
 
   $ docker build .
 
-- Find the id of the recently built image by running
+- Find the id of the recently built image by running::
 
   $ docker images
 
-- Use that id to launch the server:
+- Use that id to launch the server::
 
   $ docker run -d -p 8888:80 <id>
 
